@@ -1,5 +1,5 @@
 package sh.duomn.spring_hibernate.example.dao;
 
-public class UserDao {
+public class UserDao implements IUserDao {
 
 }
