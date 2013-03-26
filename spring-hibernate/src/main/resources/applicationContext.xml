@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<!-- 数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://127.0.0.1:3306/smile"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123"></property>
+	</bean>
+	
+	<!-- sessionFactory -->
+	<bean id="seesionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+		<props>
+			<prop key="hibernate.show_sql">true</prop>                	
+			<prop key="hibernate.format_sql">true</prop>
+			<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+			<prop key="hibernate.hbm2ddl.auto">update</prop>
+		</props>
+		</property>
+		
+		<property name="configLocations">
+			<list>
+				<value>classpath*:com/duomn/web/controller/hibernate/hibernate.cfg.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 事物的基本分类：表达式拦截、注解、代理机制 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.support.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFatory"></property>
+	</bean>
+	
+	<bean id="tranactionBase" class="org.springframework.transaction.interceptor.DelegatingTransactionAttribute">
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="add*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="upadte*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="modify*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="query*">PROPAGATION_NEVER</prop>
+				<prop key="find*">PROPAGATION_NEVER</prop>
+			</props>
+		</property>
+	</bean>
+	
+
+</beans>
